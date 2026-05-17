@@ -1,76 +1,283 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Smart Exam Control System</title>
 
-    <link rel="stylesheet" href="style.css" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
 
-    <script defer src="schedule.js"></script>
-    <script defer src="script.js"></script>
+    <title>
+        Al-Rowad Exam System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    />
+
 </head>
+
 <body>
 
+    <!-- BACKGROUND -->
+
     <div class="background-grid"></div>
-    <div class="background-glow"></div>
 
-    <!-- LOGIN SCREEN -->
-    <div class="login-overlay" id="loginOverlay">
-
-        <div class="login-card">
-
-            <div class="login-logo">
-                ECS
-            </div>
-
-            <h1>Exam Control System</h1>
-            <p>Administrator Access</p>
-
-            <input type="text" id="username" placeholder="Username" />
-            <input type="password" id="password" placeholder="Password" />
-
-            <button id="loginBtn">
-                Login
-            </button>
-
-            <span id="loginError"></span>
-
-        </div>
-
+    <div class="background-text">
+        AL-ROWAD
     </div>
 
-    <!-- TOP BAR -->
+    <!-- FLOATING DOTS -->
+
+    <div class="floating-dot dot-blue"></div>
+    <div class="floating-dot dot-yellow"></div>
+    <div class="floating-dot dot-red"></div>
+
+    <!-- TOPBAR -->
+
     <header class="topbar">
 
         <div class="branding">
 
             <div class="logo-box">
-                ECS
+                AR
             </div>
 
             <div>
-                <h1>School Exam System</h1>
-                <p>Live Examination Dashboard</p>
+
+                <h1>
+                    Al-Rowad School
+                </h1>
+
+                <p>
+                    Examination Management System
+                </p>
+
             </div>
 
         </div>
 
         <div class="clock-box">
-            <span id="liveDate"></span>
-            <strong id="liveClock"></strong>
+
+            <span id="liveDate">
+                Tuesday, May 20, 2025
+            </span>
+
+            <strong id="liveClock">
+                09:15:34 <span>AM</span>
+            </strong>
+
+        </div>
+
+        <div class="top-actions">
+
+            <button
+                class="action-btn"
+                id="fullscreenBtn"
+            >
+                Fullscreen
+            </button>
+
+            <button
+                class="action-btn primary-btn"
+            >
+                Admin Panel
+            </button>
+
         </div>
 
     </header>
 
     <!-- MAIN LAYOUT -->
+
     <main class="layout">
 
-        <!-- LEFT -->
-        <section class="panel admin-panel">
+        <!-- SIDEBAR -->
 
-            <div class="panel-title">
-                Schedule Configuration
+        <aside class="sidebar">
+
+            <div class="sidebar-item active">
+                Dashboard
             </div>
 
+            <div class="sidebar-item">
+                Schedule
+            </div>
+
+            <div class="sidebar-item">
+                Live Exams
+            </div>
+
+            <div class="sidebar-item">
+                Subjects
+            </div>
+
+            <div class="sidebar-item">
+                Grades
+            </div>
+
+            <div class="sidebar-item">
+                Alerts
+            </div>
+
+        </aside>
+
+        <!-- CENTER -->
+
+        <section class="hero-panel">
+
+            <div class="status-pill" id="statusPill">
+                ● LIVE NOW
+            </div>
+
+            <div class="hero-status-title">
+                EXAM IN PROGRESS
+            </div>
+
+            <!-- COUNTDOWN -->
+
+            <div
+                class="hero-countdown"
+                id="heroCountdown"
+            >
+
+                <div class="time-box time-blue">
+                    01
+                </div>
+
+                <div class="colon">
+                    :
+                </div>
+
+                <div class="time-box time-yellow">
+                    44
+                </div>
+
+                <div class="colon">
+                    :
+                </div>
+
+                <div class="time-box time-dark">
+                    26
+                </div>
+
+            </div>
+
+            <!-- SUBJECT -->
+
+            <div
+                class="hero-subject"
+                id="heroSubject"
+            >
+                <span>
+                    Grade 8
+                </span>
+
+                — Mathematics
+            </div>
+
+            <!-- DETAILS -->
+
+            <div class="hero-details">
+
+                <div class="detail-box">
+
+                    <span>
+                        Started At
+                    </span>
+
+                    <strong id="heroStart">
+                        08:30 AM
+                    </strong>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <span>
+                        Ends At
+                    </span>
+
+                    <strong id="heroEnd">
+                        10:30 AM
+                    </strong>
+
+                </div>
+
+                <div class="detail-box">
+
+                    <span>
+                        Duration
+                    </span>
+
+                    <strong>
+                        02:00 Hrs
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <!-- PROGRESS -->
+
+            <div class="progress-container">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                ></div>
+
+            </div>
+
+            <!-- ALERT -->
+
+            <div class="alert-box">
+
+                <strong>
+                    15 minutes remaining
+                </strong>
+
+                <p>
+                    Please ensure students
+                    are wrapping up their work.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- RIGHT -->
+
+        <section class="active-panel">
+
+            <div
+                class="active-card"
+                id="activeContainer"
+            >
+
+                <h3>
+                    Grade 8
+                </h3>
+
+                <strong>
+                    Mathematics
+                </strong>
+
+                <p>
+                    08:30 AM - 10:30 AM
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="schedule.js"></script>
+    <script src="script.js"></script>
+
+</body>
 </html>
