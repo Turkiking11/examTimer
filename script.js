@@ -1,19 +1,34 @@
-const liveClock = document.getElementById("liveClock");
-const liveDate = document.getElementById("liveDate");
+const liveClock =
+    document.getElementById("liveClock");
 
-const heroSubject = document.getElementById("heroSubject");
-const heroCountdown = document.getElementById("heroCountdown");
+const liveDate =
+    document.getElementById("liveDate");
 
-const heroStart = document.getElementById("heroStart");
-const heroEnd = document.getElementById("heroEnd");
+const heroSubject =
+    document.getElementById("heroSubject");
 
-const activeContainer = document.getElementById("activeContainer");
+const heroCountdown =
+    document.getElementById("heroCountdown");
 
-const progressBar = document.querySelector(".progress-bar");
+const heroStart =
+    document.getElementById("heroStart");
 
-const statusPill = document.getElementById("statusPill");
+const heroEnd =
+    document.getElementById("heroEnd");
 
-const fullscreenBtn = document.getElementById("fullscreenBtn");
+const activeContainer =
+    document.getElementById("activeContainer");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const statusPill =
+    document.getElementById("statusPill");
+
+const fullscreenBtn =
+    document.getElementById("fullscreenBtn");
+
+/* FULLSCREEN */
 
 fullscreenBtn.addEventListener("click", () => {
 
@@ -21,89 +36,64 @@ fullscreenBtn.addEventListener("click", () => {
 
 });
 
-/* =========================
-   LIVE CLOCK
-========================= */
+/* LIVE CLOCK */
 
 function updateClock() {
 
     const now = new Date();
 
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
+    const hours =
+        now.getHours();
+
+    const minutes =
+        now.getMinutes();
+
+    const seconds =
+        now.getSeconds();
 
     const formattedHours =
         String(hours % 12 || 12).padStart(2, "0");
 
-    const ampm = hours >= 12 ? "PM" : "AM";
+    const ampm =
+        hours >= 12 ? "PM" : "AM";
 
     liveClock.innerHTML = `
         ${formattedHours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}
         <span>${ampm}</span>
     `;
 
-    liveDate.textContent = now.toLocaleDateString(undefined, {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-    });
+    liveDate.textContent =
+        now.toLocaleDateString(undefined, {
+
+            weekday: "long",
+
+            month: "long",
+
+            day: "numeric",
+
+            year: "numeric"
+
+        });
 
 }
 
 setInterval(updateClock, 1000);
+
 updateClock();
 
-/* =========================
-   FLOATING DOTS
-========================= */
-
-function createFloatingDots() {
-
-    const colors = [
-        "dot-blue",
-        "dot-yellow",
-        "dot-red"
-    ];
-
-    for (let i = 0; i < 18; i++) {
-
-        const dot = document.createElement("div");
-
-        dot.className =
-            `floating-dot ${colors[Math.floor(Math.random() * colors.length)]}`;
-
-        dot.style.left = Math.random() * 100 + "%";
-
-        dot.style.top = Math.random() * 100 + "%";
-
-        dot.style.animationDelay =
-            Math.random() * 5 + "s";
-
-        dot.style.animationDuration =
-            (6 + Math.random() * 6) + "s";
-
-        document.body.appendChild(dot);
-
-    }
-
-}
-
-createFloatingDots();
-
-/* =========================
-   TIME UTILITIES
-========================= */
+/* TIME UTILITIES */
 
 function convertTime(timeString) {
 
-    const [hour, minute] = timeString.split(":");
+    const [hour, minute] =
+        timeString.split(":");
 
     const date = new Date();
 
     date.setHours(hour);
+
     date.setMinutes(minute);
+
     date.setSeconds(0);
 
     return date;
@@ -125,16 +115,21 @@ function formatTime(ms) {
         totalSeconds % 60;
 
     return {
-        hours: String(hours).padStart(2, "0"),
-        minutes: String(minutes).padStart(2, "0"),
-        seconds: String(seconds).padStart(2, "0")
+
+        hours:
+            String(hours).padStart(2, "0"),
+
+        minutes:
+            String(minutes).padStart(2, "0"),
+
+        seconds:
+            String(seconds).padStart(2, "0")
+
     };
 
 }
 
-/* =========================
-   ACTIVE EXAMS
-========================= */
+/* MAIN EXAM SYSTEM */
 
 function updateExamSystem() {
 
@@ -152,13 +147,17 @@ function updateExamSystem() {
         const end =
             convertTime(exam.end);
 
-        if (now >= start && now <= end) {
+        if (
+            now >= start &&
+            now <= end
+        ) {
 
             if (!firstActive) {
                 firstActive = exam;
             }
 
-            const diff = end - now;
+            const diff =
+                end - now;
 
             const formatted =
                 formatTime(diff);
@@ -166,12 +165,18 @@ function updateExamSystem() {
             const card =
                 document.createElement("div");
 
-            card.className = "active-card";
+            card.className =
+                "active-card";
 
             card.innerHTML = `
-                <h3>${exam.grade}</h3>
 
-                <strong>${exam.subject}</strong>
+                <h3>
+                    ${exam.grade}
+                </h3>
+
+                <strong>
+                    ${exam.subject}
+                </strong>
 
                 <p>
                     ${exam.start} - ${exam.end}
@@ -183,6 +188,7 @@ function updateExamSystem() {
                     ${formatted.hours}:${formatted.minutes}:${formatted.seconds}
                     remaining
                 </p>
+
             `;
 
             activeContainer.appendChild(card);
@@ -190,6 +196,8 @@ function updateExamSystem() {
         }
 
     });
+
+    /* HERO */
 
     if (firstActive) {
 
@@ -211,30 +219,42 @@ function updateExamSystem() {
         progressBar.style.width =
             `${progress}%`;
 
-        const diff = end - now;
+        const diff =
+            end - now;
 
         const formatted =
             formatTime(diff);
 
-        heroSubject.innerHTML =
-            `<span>${firstActive.grade}</span> — ${firstActive.subject}`;
+        heroSubject.innerHTML = `
+            <span>
+                ${firstActive.grade}
+            </span>
+
+            — ${firstActive.subject}
+        `;
 
         heroCountdown.innerHTML = `
+
             <div class="time-box time-blue">
                 ${formatted.hours}
             </div>
 
-            <div class="colon">:</div>
+            <div class="colon">
+                :
+            </div>
 
             <div class="time-box time-yellow">
                 ${formatted.minutes}
             </div>
 
-            <div class="colon">:</div>
+            <div class="colon">
+                :
+            </div>
 
             <div class="time-box time-dark">
                 ${formatted.seconds}
             </div>
+
         `;
 
         heroStart.textContent =
@@ -248,24 +268,12 @@ function updateExamSystem() {
             statusPill.textContent =
                 "15 MINUTES REMAINING";
 
-            statusPill.style.background =
-                "#fff7d6";
-
-            statusPill.style.color =
-                "#ca8a04";
-
         }
 
         else {
 
             statusPill.textContent =
-                "LIVE NOW";
-
-            statusPill.style.background =
-                "#e8fff2";
-
-            statusPill.style.color =
-                "#16a34a";
+                "● LIVE NOW";
 
         }
 
@@ -275,16 +283,6 @@ function updateExamSystem() {
 
         heroSubject.innerHTML =
             "No Active Exams";
-
-        heroCountdown.innerHTML = `
-            <div class="time-box time-blue">00</div>
-            <div class="colon">:</div>
-            <div class="time-box time-yellow">00</div>
-            <div class="colon">:</div>
-            <div class="time-box time-dark">00</div>
-        `;
-
-        progressBar.style.width = "0%";
 
     }
 
