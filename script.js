@@ -1,23 +1,28 @@
 const liveClock = document.getElementById("liveClock");
+const liveDate = document.getElementById("liveDate");
 
-const examNameInput = document.getElementById("examName");
-const startTimeInput = document.getElementById("startTime");
-const endTimeInput = document.getElementById("endTime");
-
-const startExamBtn = document.getElementById("startExamBtn");
-
-const examDisplay = document.getElementById("examDisplay");
-const displayExamName = document.getElementById("displayExamName");
-const gradesDisplay = document.getElementById("gradesDisplay");
-
-const statusBox = document.getElementById("statusBox");
 const countdown = document.getElementById("countdown");
 
-const displayStart = document.getElementById("displayStart");
-const displayEnd = document.getElementById("displayEnd");
+const currentExamTitle = document.getElementById("currentExamTitle");
+
+const statusPill = document.getElementById("statusPill");
+
+const startTimeText = document.getElementById("startTime");
+const endTimeText = document.getElementById("endTime");
 const remainingText = document.getElementById("remainingText");
 
-let examStarted = false;
+const scheduleContainer = document.getElementById("scheduleContainer");
+
+const activeExamsContainer = document.getElementById("activeExams");
+const upcomingExamsContainer = document.getElementById("upcomingExams");
+
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+fullscreenBtn.addEventListener("click", () => {
+
+    document.documentElement.requestFullscreen();
+
+});
 
 function updateClock() {
 
@@ -25,123 +30,164 @@ function updateClock() {
 
     liveClock.textContent = now.toLocaleTimeString();
 
+    liveDate.textContent = now.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+    });
+
 }
 
 setInterval(updateClock, 1000);
 updateClock();
 
-startExamBtn.addEventListener("click", () => {
+function convertToDate(timeString) {
 
-    const examName = examNameInput.value || "Unnamed Exam";
+    const [hour, minute] = timeString.split(":");
 
-    const startTime = startTimeInput.value;
-    const endTime = endTimeInput.value;
+    const date = new Date();
 
-    if (!startTime || !endTime) {
-        alert("Please select start and end times.");
-        return;
-    }
+    date.setHours(hour);
+    date.setMinutes(minute);
+    date.setSeconds(0);
 
-    const checkedGrades = [
-        ...document.querySelectorAll(".grade-card input:checked")
-    ].map(input => `Grade ${input.value}`);
-
-    if (checkedGrades.length === 0) {
-        alert("Please select at least one grade.");
-        return;
-    }
-
-    displayExamName.textContent = examName;
-    gradesDisplay.textContent = checkedGrades.join(" • ");
-
-    displayStart.textContent = startTime;
-    displayEnd.textContent = endTime;
-
-    examDisplay.classList.remove("hidden");
-
-    const now = new Date();
-
-    const startDate = new Date();
-    const endDate = new Date();
-
-    const [startHour, startMinute] = startTime.split(":");
-    const [endHour, endMinute] = endTime.split(":");
-
-    startDate.setHours(startHour, startMinute, 0);
-    endDate.setHours(endHour, endMinute, 0);
-
-    if (endDate <= startDate) {
-        endDate.setDate(endDate.getDate() + 1);
-    }
-
-    if (examStarted) return;
-
-    examStarted = true;
-
-    const timerInterval = setInterval(() => {
-
-        const current = new Date();
-
-        if (current < startDate) {
-
-            statusBox.textContent = "Exam Has Not Started";
-            statusBox.style.background = "#f59e0b";
-
-            const diff = startDate - current;
-
-            updateCountdown(diff);
-
-            remainingText.textContent = "Waiting...";
-
-        }
-
-        else if (current >= startDate && current <= endDate) {
-
-            statusBox.textContent = "Exam In Progress";
-            statusBox.style.background = "#22c55e";
-
-            const diff = endDate - current;
-
-            updateCountdown(diff);
-
-            remainingText.textContent = formatTime(diff);
-
-        }
-
-        else {
-
-            statusBox.textContent = "Exam Finished";
-            statusBox.style.background = "#ef4444";
-
-            countdown.textContent = "00:00:00";
-            remainingText.textContent = "Finished";
-
-            clearInterval(timerInterval);
-
-        }
-
-    }, 1000);
-
-});
-
-function updateCountdown(milliseconds) {
-
-    countdown.textContent = formatTime(milliseconds);
+    return date;
 
 }
 
-function formatTime(milliseconds) {
+function formatTime(ms) {
 
-    const totalSeconds = Math.floor(milliseconds / 1000);
+    const totalSeconds = Math.floor(ms / 1000);
 
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
-    return `
-${String(hours).padStart(2, "0")}:
-${String(minutes).padStart(2, "0")}:
-${String(seconds).padStart(2, "0")}
-`.replace(/\s/g, "");
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
 }
+
+function updateSystem() {
+
+    const now = new Date();
+
+    scheduleContainer.innerHTML = "";
+
+    activeExamsContainer.innerHTML = "";
+    upcomingExamsContainer.innerHTML = "";
+
+    let activeExam = null;
+
+    examSchedule.forEach(exam => {
+
+        const start = convertToDate(exam.start);
+        const end = convertToDate(exam.end);
+
+        let state = "upcoming";
+
+        if (now >= start && now <= end) {
+            state = "active";
+        }
+
+        else if (now > end) {
+            state = "finished";
+        }
+
+        const card = document.createElement("div");
+
+        card.className = `schedule-card ${state}`;
+
+        card.innerHTML = `
+            <div class="schedule-grade">${exam.grade}</div>
+            <div class="schedule-subject">${exam.subject}</div>
+            <div class="schedule-time">${exam.start} - ${exam.end}</div>
+        `;
+
+        scheduleContainer.appendChild(card);
+
+        if (state === "active") {
+
+            activeExam = exam;
+
+            const activeItem = document.createElement("div");
+
+            activeItem.className = "exam-list-item";
+
+            activeItem.innerHTML = `
+                <strong>${exam.grade}</strong>
+                <span>${exam.subject}</span>
+            `;
+
+            activeExamsContainer.appendChild(activeItem);
+
+        }
+
+        if (state === "upcoming") {
+
+            const upcomingItem = document.createElement("div");
+
+            upcomingItem.className = "exam-list-item";
+
+            upcomingItem.innerHTML = `
+                <strong>${exam.grade}</strong>
+                <span>${exam.subject} • ${exam.start}</span>
+            `;
+
+            upcomingExamsContainer.appendChild(upcomingItem);
+
+        }
+
+    });
+
+    if (activeExam) {
+
+        const end = convertToDate(activeExam.end);
+
+        const diff = end - now;
+
+        countdown.textContent = formatTime(diff);
+
+        currentExamTitle.textContent =
+            `${activeExam.grade} — ${activeExam.subject}`;
+
+        startTimeText.textContent = activeExam.start;
+        endTimeText.textContent = activeExam.end;
+
+        remainingText.textContent = formatTime(diff);
+
+        statusPill.textContent = "EXAM IN PROGRESS";
+        statusPill.style.background = "#22c55e";
+
+        if (diff <= 900000 && diff > 300000) {
+            statusPill.textContent = "15 MINUTES REMAINING";
+            statusPill.style.background = "#f59e0b";
+        }
+
+        if (diff <= 300000) {
+            statusPill.textContent = "5 MINUTES REMAINING";
+            statusPill.style.background = "#ef4444";
+        }
+
+    }
+
+    else {
+
+        countdown.textContent = "00:00:00";
+
+        currentExamTitle.textContent = "No Active Exam";
+
+        startTimeText.textContent = "--:--";
+        endTimeText.textContent = "--:--";
+
+        remainingText.textContent = "Waiting";
+
+        statusPill.textContent = "WAITING";
+        statusPill.style.background = "#f59e0b";
+
+    }
+
+}
+
+updateSystem();
+
+setInterval(updateSystem, 1000);
