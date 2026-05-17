@@ -1,24 +1,24 @@
-let examSchedule = [
+const examSchedule = [
 
     {
         grade: "Grade 7",
         subject: "Mathematics",
-        start: "08:00",
-        end: "10:00"
+        start: "08:30",
+        end: "10:30"
     },
 
     {
         grade: "Grade 8",
-        subject: "English",
-        start: "08:00",
-        end: "10:00"
+        subject: "Science",
+        start: "08:30",
+        end: "10:30"
     },
 
     {
         grade: "Grade 9",
-        subject: "Physics",
-        start: "08:00",
-        end: "10:00"
+        subject: "Computer",
+        start: "08:30",
+        end: "10:30"
     }
 
 ];
