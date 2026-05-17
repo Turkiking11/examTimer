@@ -1,59 +1,19 @@
-
-const loginOverlay = document.getElementById("loginOverlay");
-const loginBtn = document.getElementById("loginBtn");
-const loginError = document.getElementById("loginError");
-
-const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
-
 const liveClock = document.getElementById("liveClock");
 const liveDate = document.getElementById("liveDate");
 
-const heroGrade = document.getElementById("heroGrade");
 const heroSubject = document.getElementById("heroSubject");
 const heroCountdown = document.getElementById("heroCountdown");
 
 const heroStart = document.getElementById("heroStart");
 const heroEnd = document.getElementById("heroEnd");
-const heroStatus = document.getElementById("heroStatus");
+
+const activeContainer = document.getElementById("activeContainer");
+
+const progressBar = document.querySelector(".progress-bar");
 
 const statusPill = document.getElementById("statusPill");
 
-const activeContainer = document.getElementById("activeContainer");
-const scheduleList = document.getElementById("scheduleList");
-
-const gradeInput = document.getElementById("gradeInput");
-const subjectInput = document.getElementById("subjectInput");
-const startInput = document.getElementById("startInput");
-const endInput = document.getElementById("endInput");
-
-const addExamBtn = document.getElementById("addExamBtn");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
-
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD = "1234";
-
-loginBtn.addEventListener("click", () => {
-
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-
-    if (
-        username === ADMIN_USERNAME &&
-        password === ADMIN_PASSWORD
-    ) {
-
-        loginOverlay.style.display = "none";
-
-    }
-
-    else {
-
-        loginError.textContent = "Invalid username or password";
-
-    }
-
-});
 
 fullscreenBtn.addEventListener("click", () => {
 
@@ -61,43 +21,33 @@ fullscreenBtn.addEventListener("click", () => {
 
 });
 
-addExamBtn.addEventListener("click", () => {
-
-    const grade = gradeInput.value;
-    const subject = subjectInput.value;
-    const start = startInput.value;
-    const end = endInput.value;
-
-    if (!grade || !subject || !start || !end) {
-        return;
-    }
-
-    examSchedule.push({
-        grade,
-        subject,
-        start,
-        end
-    });
-
-    renderSchedule();
-
-    gradeInput.value = "";
-    subjectInput.value = "";
-    startInput.value = "";
-    endInput.value = "";
-
-});
+/* =========================
+   LIVE CLOCK
+========================= */
 
 function updateClock() {
 
     const now = new Date();
 
-    liveClock.textContent = now.toLocaleTimeString();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    const formattedHours =
+        String(hours % 12 || 12).padStart(2, "0");
+
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    liveClock.innerHTML = `
+        ${formattedHours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}
+        <span>${ampm}</span>
+    `;
 
     liveDate.textContent = now.toLocaleDateString(undefined, {
         weekday: "long",
         month: "long",
-        day: "numeric"
+        day: "numeric",
+        year: "numeric"
     });
 
 }
@@ -105,9 +55,50 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-function convertTime(time) {
+/* =========================
+   FLOATING DOTS
+========================= */
 
-    const [hour, minute] = time.split(":");
+function createFloatingDots() {
+
+    const colors = [
+        "dot-blue",
+        "dot-yellow",
+        "dot-red"
+    ];
+
+    for (let i = 0; i < 18; i++) {
+
+        const dot = document.createElement("div");
+
+        dot.className =
+            `floating-dot ${colors[Math.floor(Math.random() * colors.length)]}`;
+
+        dot.style.left = Math.random() * 100 + "%";
+
+        dot.style.top = Math.random() * 100 + "%";
+
+        dot.style.animationDelay =
+            Math.random() * 5 + "s";
+
+        dot.style.animationDuration =
+            (6 + Math.random() * 6) + "s";
+
+        document.body.appendChild(dot);
+
+    }
+
+}
+
+createFloatingDots();
+
+/* =========================
+   TIME UTILITIES
+========================= */
+
+function convertTime(timeString) {
+
+    const [hour, minute] = timeString.split(":");
 
     const date = new Date();
 
@@ -121,49 +112,45 @@ function convertTime(time) {
 
 function formatTime(ms) {
 
-    const totalSeconds = Math.floor(ms / 1000);
+    const totalSeconds =
+        Math.floor(ms / 1000);
 
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+    const hours =
+        Math.floor(totalSeconds / 3600);
 
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    const minutes =
+        Math.floor((totalSeconds % 3600) / 60);
 
-}
+    const seconds =
+        totalSeconds % 60;
 
-function renderSchedule() {
-
-    scheduleList.innerHTML = "";
-
-    examSchedule.forEach((exam, index) => {
-
-        const item = document.createElement("div");
-
-        item.className = "schedule-item";
-
-        item.innerHTML = `
-            <strong>${exam.grade} — ${exam.subject}</strong>
-            <span>${exam.start} - ${exam.end}</span>
-        `;
-
-        scheduleList.appendChild(item);
-
-    });
+    return {
+        hours: String(hours).padStart(2, "0"),
+        minutes: String(minutes).padStart(2, "0"),
+        seconds: String(seconds).padStart(2, "0")
+    };
 
 }
 
-function updateExams() {
+/* =========================
+   ACTIVE EXAMS
+========================= */
 
-    activeContainer.innerHTML = "";
+function updateExamSystem() {
 
     const now = new Date();
+
+    activeContainer.innerHTML = "";
 
     let firstActive = null;
 
     examSchedule.forEach(exam => {
 
-        const start = convertTime(exam.start);
-        const end = convertTime(exam.end);
+        const start =
+            convertTime(exam.start);
+
+        const end =
+            convertTime(exam.end);
 
         if (now >= start && now <= end) {
 
@@ -171,16 +158,34 @@ function updateExams() {
                 firstActive = exam;
             }
 
-            const item = document.createElement("div");
+            const diff = end - now;
 
-            item.className = "active-item";
+            const formatted =
+                formatTime(diff);
 
-            item.innerHTML = `
-                <strong>${exam.grade}</strong>
-                <span>${exam.subject}</span>
+            const card =
+                document.createElement("div");
+
+            card.className = "active-card";
+
+            card.innerHTML = `
+                <h3>${exam.grade}</h3>
+
+                <strong>${exam.subject}</strong>
+
+                <p>
+                    ${exam.start} - ${exam.end}
+                </p>
+
+                <br>
+
+                <p>
+                    ${formatted.hours}:${formatted.minutes}:${formatted.seconds}
+                    remaining
+                </p>
             `;
 
-            activeContainer.appendChild(item);
+            activeContainer.appendChild(card);
 
         }
 
@@ -188,34 +193,79 @@ function updateExams() {
 
     if (firstActive) {
 
-        const end = convertTime(firstActive.end);
+        const start =
+            convertTime(firstActive.start);
+
+        const end =
+            convertTime(firstActive.end);
+
+        const totalDuration =
+            end - start;
+
+        const elapsed =
+            now - start;
+
+        const progress =
+            (elapsed / totalDuration) * 100;
+
+        progressBar.style.width =
+            `${progress}%`;
 
         const diff = end - now;
 
-        heroGrade.textContent = firstActive.grade;
-        heroSubject.textContent = `${firstActive.subject} Examination`;
+        const formatted =
+            formatTime(diff);
 
-        heroCountdown.textContent = formatTime(diff);
+        heroSubject.innerHTML =
+            `<span>${firstActive.grade}</span> — ${firstActive.subject}`;
 
-        heroStart.textContent = firstActive.start;
-        heroEnd.textContent = firstActive.end;
+        heroCountdown.innerHTML = `
+            <div class="time-box time-blue">
+                ${formatted.hours}
+            </div>
 
-        heroStatus.textContent = "Running";
+            <div class="colon">:</div>
 
-        statusPill.textContent = "LIVE EXAMS";
-        statusPill.style.background = "#22c55e";
+            <div class="time-box time-yellow">
+                ${formatted.minutes}
+            </div>
+
+            <div class="colon">:</div>
+
+            <div class="time-box time-dark">
+                ${formatted.seconds}
+            </div>
+        `;
+
+        heroStart.textContent =
+            firstActive.start;
+
+        heroEnd.textContent =
+            firstActive.end;
 
         if (diff <= 900000) {
 
-            statusPill.textContent = "15 MINUTES REMAINING";
-            statusPill.style.background = "#f59e0b";
+            statusPill.textContent =
+                "15 MINUTES REMAINING";
+
+            statusPill.style.background =
+                "#fff7d6";
+
+            statusPill.style.color =
+                "#ca8a04";
 
         }
 
-        if (diff <= 300000) {
+        else {
 
-            statusPill.textContent = "5 MINUTES REMAINING";
-            statusPill.style.background = "#ef4444";
+            statusPill.textContent =
+                "LIVE NOW";
+
+            statusPill.style.background =
+                "#e8fff2";
+
+            statusPill.style.color =
+                "#16a34a";
 
         }
 
@@ -223,26 +273,23 @@ function updateExams() {
 
     else {
 
-        heroGrade.textContent = "No Active Grade";
-        heroSubject.textContent = "Waiting For Exams";
+        heroSubject.innerHTML =
+            "No Active Exams";
 
-        heroCountdown.textContent = "00:00:00";
+        heroCountdown.innerHTML = `
+            <div class="time-box time-blue">00</div>
+            <div class="colon">:</div>
+            <div class="time-box time-yellow">00</div>
+            <div class="colon">:</div>
+            <div class="time-box time-dark">00</div>
+        `;
 
-        heroStart.textContent = "--:--";
-        heroEnd.textContent = "--:--";
-
-        heroStatus.textContent = "Waiting";
-
-        statusPill.textContent = "WAITING";
-        statusPill.style.background = "#2563eb";
+        progressBar.style.width = "0%";
 
     }
 
 }
 
-renderSchedule();
+updateExamSystem();
 
-updateExams();
-
-setInterval(updateExams, 1000);
-
+setInterval(updateExamSystem, 1000);
