@@ -1,0 +1,209 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #0f172a;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1100px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.top-bar h1 {
+    font-size: 2.2rem;
+}
+
+.live-clock {
+    background: #1e293b;
+    padding: 15px 25px;
+    border-radius: 14px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.setup-panel {
+    background: #111827;
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: #1e293b;
+    color: white;
+    font-size: 1rem;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.grades-section {
+    margin-top: 10px;
+}
+
+.grades-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.grade-options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.grade-card {
+    background: #1e293b;
+    padding: 18px 24px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.grade-card:hover {
+    border-color: #3b82f6;
+}
+
+.grade-card input {
+    margin-right: 10px;
+}
+
+#startExamBtn {
+    margin-top: 30px;
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 16px;
+    background: #2563eb;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#startExamBtn:hover {
+    background: #1d4ed8;
+}
+
+.exam-display {
+    margin-top: 30px;
+    background: #111827;
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.exam-header h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.grades-display {
+    color: #94a3b8;
+    margin-bottom: 25px;
+}
+
+.status-box {
+    display: inline-block;
+    background: #f59e0b;
+    color: black;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.countdown {
+    font-size: 6rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    letter-spacing: 4px;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.detail-card {
+    background: #1e293b;
+    padding: 25px;
+    border-radius: 18px;
+}
+
+.detail-card span {
+    display: block;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+.detail-card strong {
+    font-size: 1.3rem;
+}
+
+.hidden {
+    display: none;
+}
+
+@media(max-width: 800px) {
+
+    .countdown {
+        font-size: 3rem;
+    }
+
+    .details {
+        grid-template-columns: 1fr;
+    }
+
+    .input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+}

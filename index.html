@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Professional Exam Timer</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div class="container">
+
+        <div class="top-bar">
+            <h1>Exam Timer System</h1>
+            <div class="live-clock" id="liveClock">00:00:00</div>
+        </div>
+
+        <div class="setup-panel">
+
+            <div class="input-group">
+                <label>Exam Name</label>
+                <input type="text" id="examName" placeholder="Math Final Exam" />
+            </div>
+
+            <div class="input-row">
+
+                <div class="input-group">
+                    <label>Start Time</label>
+                    <input type="time" id="startTime" />
+                </div>
+
+                <div class="input-group">
+                    <label>End Time</label>
+                    <input type="time" id="endTime" />
+                </div>
+
+            </div>
+
+            <div class="grades-section">
+
+                <h2>Included Grades</h2>
+
+                <div class="grade-options">
+
+                    <label class="grade-card">
+                        <input type="checkbox" value="7" checked />
+                        <span>Grade 7</span>
+                    </label>
+
+                    <label class="grade-card">
+                        <input type="checkbox" value="8" checked />
+                        <span>Grade 8</span>
+                    </label>
+
+                    <label class="grade-card">
+                        <input type="checkbox" value="9" checked />
+                        <span>Grade 9</span>
+                    </label>
+
+                </div>
+
+            </div>
+
+            <button id="startExamBtn">
+                Start Exam Session
+            </button>
+
+        </div>
+
+        <div class="exam-display hidden" id="examDisplay">
+
+            <div class="exam-header">
+                <h2 id="displayExamName">Exam</h2>
+                <div class="grades-display" id="gradesDisplay"></div>
+            </div>
+
+            <div class="status-box" id="statusBox">
+                Waiting To Start
+            </div>
+
+            <div class="countdown" id="countdown">
+                00:00:00
+            </div>
+
+            <div class="details">
+
+                <div class="detail-card">
+                    <span>Start Time</span>
+                    <strong id="displayStart">--:--</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>End Time</span>
+                    <strong id="displayEnd">--:--</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Time Remaining</span>
+                    <strong id="remainingText">Waiting...</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
