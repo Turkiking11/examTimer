@@ -19,7 +19,7 @@ const examSchedule = [
         grade: "Grade 7",
         subject: "English",
         start: "12:30",
-        end: "14:00"
+        end: "13:43"
     },
 
     // GRADE 8
