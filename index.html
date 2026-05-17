@@ -1,9 +1,12 @@
+# index.html
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>School Exam Management System</title>
+    <title>Smart Exam Control System</title>
 
     <link rel="stylesheet" href="style.css" />
 
@@ -12,93 +15,140 @@
 </head>
 <body>
 
+    <div class="background-grid"></div>
     <div class="background-glow"></div>
 
+    <!-- LOGIN SCREEN -->
+    <div class="login-overlay" id="loginOverlay">
+
+        <div class="login-card">
+
+            <div class="login-logo">
+                ECS
+            </div>
+
+            <h1>Exam Control System</h1>
+            <p>Administrator Access</p>
+
+            <input type="text" id="username" placeholder="Username" />
+            <input type="password" id="password" placeholder="Password" />
+
+            <button id="loginBtn">
+                Login
+            </button>
+
+            <span id="loginError"></span>
+
+        </div>
+
+    </div>
+
+    <!-- TOP BAR -->
     <header class="topbar">
 
         <div class="branding">
-            <div class="logo-box">S</div>
+
+            <div class="logo-box">
+                ECS
+            </div>
 
             <div>
-                <h1>School Examination System</h1>
-                <p>Final Exams 2026</p>
+                <h1>School Exam System</h1>
+                <p>Live Examination Dashboard</p>
             </div>
+
         </div>
 
-        <div class="clock-section">
-            <div id="liveDate">Sunday, May 17</div>
-            <div id="liveClock">00:00:00</div>
+        <div class="clock-box">
+            <span id="liveDate"></span>
+            <strong id="liveClock"></strong>
         </div>
 
     </header>
 
+    <!-- MAIN LAYOUT -->
     <main class="layout">
 
         <!-- LEFT -->
-        <section class="panel schedule-panel">
+        <section class="panel admin-panel">
 
             <div class="panel-title">
-                Today's Schedule
+                Schedule Configuration
             </div>
 
-            <div id="scheduleContainer"></div>
+            <div class="admin-form">
+
+                <input type="text" id="gradeInput" placeholder="Grade (Example: Grade 7)" />
+
+                <input type="text" id="subjectInput" placeholder="Subject" />
+
+                <div class="time-row">
+                    <input type="time" id="startInput" />
+                    <input type="time" id="endInput" />
+                </div>
+
+                <button id="addExamBtn">
+                    Add Exam
+                </button>
+
+            </div>
+
+            <div class="schedule-list" id="scheduleList"></div>
 
         </section>
 
         <!-- CENTER -->
-        <section class="panel main-panel">
+        <section class="panel hero-panel">
 
             <div class="status-pill" id="statusPill">
-                WAITING
+                LIVE
             </div>
 
-            <div class="current-exam-title" id="currentExamTitle">
-                No Active Exam
+            <div class="hero-grade" id="heroGrade">
+                Grade 7
             </div>
 
-            <div class="countdown" id="countdown">
+            <div class="hero-subject" id="heroSubject">
+                Mathematics Examination
+            </div>
+
+            <div class="hero-countdown" id="heroCountdown">
                 00:00:00
             </div>
 
-            <div class="exam-meta">
+            <div class="hero-details">
 
-                <div class="meta-card">
-                    <span>Start</span>
-                    <strong id="startTime">--:--</strong>
+                <div class="detail-box">
+                    <span>START</span>
+                    <strong id="heroStart">08:00</strong>
                 </div>
 
-                <div class="meta-card">
-                    <span>End</span>
-                    <strong id="endTime">--:--</strong>
+                <div class="detail-box">
+                    <span>END</span>
+                    <strong id="heroEnd">10:00</strong>
                 </div>
 
-                <div class="meta-card">
-                    <span>Remaining</span>
-                    <strong id="remainingText">Waiting...</strong>
+                <div class="detail-box">
+                    <span>STATUS</span>
+                    <strong id="heroStatus">Running</strong>
                 </div>
 
             </div>
 
             <button id="fullscreenBtn">
-                Fullscreen Mode
+                Fullscreen Display
             </button>
 
         </section>
 
         <!-- RIGHT -->
-        <section class="panel side-panel">
+        <section class="panel active-panel">
 
             <div class="panel-title">
-                Active Exams
+                All Active Exams
             </div>
 
-            <div id="activeExams"></div>
-
-            <div class="panel-title upcoming-title">
-                Upcoming Exams
-            </div>
-
-            <div id="upcomingExams"></div>
+            <div id="activeContainer"></div>
 
         </section>
 
@@ -106,3 +156,672 @@
 
 </body>
 </html>
+```
+
+---
+
+# style.css
+
+```css
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter, sans-serif;
+}
+
+body {
+    background: #030712;
+    color: white;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.background-grid {
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+
+    background-size: 40px 40px;
+
+    z-index: 0;
+}
+
+.background-glow {
+    position: fixed;
+    width: 900px;
+    height: 900px;
+
+    background: radial-gradient(circle, #2563eb 0%, transparent 70%);
+
+    opacity: 0.15;
+
+    top: -300px;
+    right: -200px;
+
+    z-index: 0;
+}
+
+.login-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(10px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+
+    animation: fadeIn 0.6s ease;
+}
+
+.login-card {
+    width: 420px;
+
+    background: rgba(17, 24, 39, 0.9);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 30px;
+
+    padding: 40px;
+
+    animation: slideUp 0.7s ease;
+}
+
+.login-logo {
+    width: 90px;
+    height: 90px;
+
+    border-radius: 24px;
+
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.8rem;
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+.login-card h1 {
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    color: #94a3b8;
+    margin-bottom: 30px;
+}
+
+.login-card input {
+    width: 100%;
+
+    margin-bottom: 16px;
+
+    padding: 16px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: #111827;
+
+    color: white;
+
+    font-size: 1rem;
+}
+
+.login-card button {
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+    border-radius: 16px;
+
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+
+    color: white;
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+.login-card button:hover {
+    transform: translateY(-2px);
+}
+
+#loginError {
+    display: block;
+    margin-top: 15px;
+    color: #ef4444;
+}
+
+.topbar {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 30px 40px;
+}
+
+.branding {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo-box {
+    width: 70px;
+    height: 70px;
+
+    border-radius: 22px;
+
+    background: linear-gradient(135deg, #2563eb, #60a5fa);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-weight: bold;
+    font-size: 1.2rem;
+
+    box-shadow: 0 0 40px rgba(37, 99, 235, 0.4);
+}
+
+.branding p {
+    color: #94a3b8;
+}
+
+.clock-box {
+    text-align: right;
+}
+
+#liveDate {
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#liveClock {
+    font-size: 2rem;
+}
+
+.layout {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+
+    gap: 25px;
+
+    padding: 0 40px 40px;
+}
+
+.panel {
+    background: rgba(15, 23, 42, 0.82);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 30px;
+
+    backdrop-filter: blur(14px);
+
+    padding: 28px;
+
+    animation: fadeIn 0.8s ease;
+}
+
+.panel-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #cbd5e1;
+}
+
+.admin-form input {
+    width: 100%;
+
+    padding: 15px;
+
+    border: none;
+    border-radius: 16px;
+
+    margin-bottom: 15px;
+
+    background: #111827;
+
+    color: white;
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+#addExamBtn,
+#fullscreenBtn {
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+    border-radius: 18px;
+
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.25s;
+}
+
+#addExamBtn:hover,
+#fullscreenBtn:hover {
+    transform: translateY(-2px);
+}
+
+.schedule-list {
+    margin-top: 20px;
+}
+
+.schedule-item,
+.active-item {
+    background: rgba(17, 24, 39, 0.9);
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    border-radius: 20px;
+
+    padding: 18px;
+
+    margin-bottom: 14px;
+
+    animation: slideUp 0.4s ease;
+}
+
+.schedule-item strong,
+.active-item strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.schedule-item span,
+.active-item span {
+    color: #94a3b8;
+}
+
+.hero-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+.status-pill {
+    background: #22c55e;
+    color: black;
+
+    padding: 10px 24px;
+
+    border-radius: 999px;
+
+    font-weight: bold;
+
+    margin-bottom: 25px;
+
+    animation: pulse 2s infinite;
+}
+
+.hero-grade {
+    color: #60a5fa;
+    font-size: 1.2rem;
+
+    margin-bottom: 10px;
+}
+
+.hero-subject {
+    font-size: 2.2rem;
+    font-weight: bold;
+
+    margin-bottom: 30px;
+}
+
+.hero-countdown {
+    font-size: 7rem;
+    font-weight: bold;
+
+    letter-spacing: 5px;
+
+    margin-bottom: 35px;
+}
+
+.hero-details {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 30px;
+}
+
+.detail-box {
+    background: rgba(17, 24, 39, 0.9);
+
+    padding: 22px;
+
+    border-radius: 20px;
+}
+
+.detail-box span {
+    display: block;
+    color: #94a3b8;
+    margin-bottom: 8px;
+}
+
+.detail-box strong {
+    font-size: 1.2rem;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.03);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media(max-width: 1300px) {
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media(max-width: 700px) {
+
+    .hero-countdown {
+        font-size: 3rem;
+    }
+
+    .hero-details {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+}
+```
+
+---
+
+# schedule.js
+
+```javascript
+let examSchedule = [
+
+    {
+        grade: "Grade 7",
+        subject: "Mathematics",
+        start: "08:00",
+        end: "10:00"
+    },
+
+    {
+        grade: "Grade 8",
+        subject: "English",
+        start: "08:00",
+        end: "10:00"
+    },
+
+    {
+        grade: "Grade 9",
+        subject: "Physics",
+        start: "08:00",
+        end: "10:00"
+    }
+
+];
+```
+
+---
+
+# script.js
+
+```javascript
+const loginOverlay = document.getElementById("loginOverlay");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+
+const liveClock = document.getElementById("liveClock");
+const liveDate = document.getElementById("liveDate");
+
+const heroGrade = document.getElementById("heroGrade");
+const heroSubject = document.getElementById("heroSubject");
+const heroCountdown = document.getElementById("heroCountdown");
+
+const heroStart = document.getElementById("heroStart");
+const heroEnd = document.getElementById("heroEnd");
+const heroStatus = document.getElementById("heroStatus");
+
+const statusPill = document.getElementById("statusPill");
+
+const activeContainer = document.getElementById("activeContainer");
+const scheduleList = document.getElementById("scheduleList");
+
+const gradeInput = document.getElementById("gradeInput");
+const subjectInput = document.getElementById("subjectInput");
+const startInput = document.getElementById("startInput");
+const endInput = document.getElementById("endInput");
+
+const addExamBtn = document.getElementById("addExamBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "1234";
+
+loginBtn.addEventListener("click", () => {
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    if (
+        username === ADMIN_USERNAME &&
+        password === ADMIN_PASSWORD
+    ) {
+
+        loginOverlay.style.display = "none";
+
+    }
+
+    else {
+
+        loginError.textContent = "Invalid username or password";
+
+    }
+
+});
+
+fullscreenBtn.addEventListener("click", () => {
+
+    document.documentElement.requestFullscreen();
+
+});
+
+addExamBtn.addEventListener("click", () => {
+
+    const grade = gradeInput.value;
+    const subject = subjectInput.value;
+    const start = startInput.value;
+    const end = endInput.value;
+
+    if (!grade || !subject || !start || !end) {
+        return;
+    }
+
+    examSchedule.push({
+        grade,
+        subject,
+        start,
+        end
+    });
+
+    renderSchedule();
+
+    gradeInput.value = "";
+    subjectInput.value = "";
+    startInput.value = "";
+    endInput.value = "";
+
+});
+
+function updateClock() {
+
+    const now = new Date();
+
+    liveClock.textContent = now.toLocaleTimeString();
+
+    liveDate.textContent = now.toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+    });
+
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+function convertTime(time) {
+
+    const [hour, minute] = time.split(":");
+
+    const date = new Date();
+
+    date.setHours(hour);
+    date.setMinutes(minute);
+    date.setSeconds(0);
+
+    return date;
+
+}
+
+function formatTime(ms) {
+
+    const totalSeconds = Math.floor(ms / 1000);
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+}
+
+function renderSchedule() {
+
+    scheduleList.innerHTML = "";
+
+    examSchedule.forEach((exam, index) => {
+
+        const item = document.createElement("div");
+
+        item.className = "schedule-item";
+
+        item.innerHTML = `
+            <strong>${exam.grade} — ${exam.subject}</strong>
+            <span>${exam.start} - ${exam.end}</span>
+        `;
+
+        scheduleList.appendChild(item);
+
+    });
+
+}
+
+function updateExams() {
+
+    activeContainer.innerHTML = "";
+
+    const now = new Date();
+
+    let firstActive = null;
+
+    examSchedule.forEach(exam => {
+
+        const start = convertTime(exam.start);
+        const end = convertTime(exam.end);
+
+        if (now >= start && now <= end) {
+
+            if (!firstActive) {
+                firstActive = exam;
+            }
+
+            const item = document.createElement("div");
+
+            item.className = "active-item";
+
+            item.innerHTML = `
+                <strong>${exam.grade}</strong>
+                <span>${exam.subject}</span>
+            `;
+```
