@@ -289,5 +289,3 @@ function updateExamSystem() {
 }
 
 updateExamSystem();
-
-setInterval(updateExamSystem, 1000);
