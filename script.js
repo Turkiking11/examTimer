@@ -1,26 +1,90 @@
+
+const loginOverlay = document.getElementById("loginOverlay");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+
 const liveClock = document.getElementById("liveClock");
 const liveDate = document.getElementById("liveDate");
 
-const countdown = document.getElementById("countdown");
+const heroGrade = document.getElementById("heroGrade");
+const heroSubject = document.getElementById("heroSubject");
+const heroCountdown = document.getElementById("heroCountdown");
 
-const currentExamTitle = document.getElementById("currentExamTitle");
+const heroStart = document.getElementById("heroStart");
+const heroEnd = document.getElementById("heroEnd");
+const heroStatus = document.getElementById("heroStatus");
 
 const statusPill = document.getElementById("statusPill");
 
-const startTimeText = document.getElementById("startTime");
-const endTimeText = document.getElementById("endTime");
-const remainingText = document.getElementById("remainingText");
+const activeContainer = document.getElementById("activeContainer");
+const scheduleList = document.getElementById("scheduleList");
 
-const scheduleContainer = document.getElementById("scheduleContainer");
+const gradeInput = document.getElementById("gradeInput");
+const subjectInput = document.getElementById("subjectInput");
+const startInput = document.getElementById("startInput");
+const endInput = document.getElementById("endInput");
 
-const activeExamsContainer = document.getElementById("activeExams");
-const upcomingExamsContainer = document.getElementById("upcomingExams");
-
+const addExamBtn = document.getElementById("addExamBtn");
 const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "1234";
+
+loginBtn.addEventListener("click", () => {
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    if (
+        username === ADMIN_USERNAME &&
+        password === ADMIN_PASSWORD
+    ) {
+
+        loginOverlay.style.display = "none";
+
+    }
+
+    else {
+
+        loginError.textContent = "Invalid username or password";
+
+    }
+
+});
 
 fullscreenBtn.addEventListener("click", () => {
 
     document.documentElement.requestFullscreen();
+
+});
+
+addExamBtn.addEventListener("click", () => {
+
+    const grade = gradeInput.value;
+    const subject = subjectInput.value;
+    const start = startInput.value;
+    const end = endInput.value;
+
+    if (!grade || !subject || !start || !end) {
+        return;
+    }
+
+    examSchedule.push({
+        grade,
+        subject,
+        start,
+        end
+    });
+
+    renderSchedule();
+
+    gradeInput.value = "";
+    subjectInput.value = "";
+    startInput.value = "";
+    endInput.value = "";
 
 });
 
@@ -41,9 +105,9 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-function convertToDate(timeString) {
+function convertTime(time) {
 
-    const [hour, minute] = timeString.split(":");
+    const [hour, minute] = time.split(":");
 
     const date = new Date();
 
@@ -67,127 +131,118 @@ function formatTime(ms) {
 
 }
 
-function updateSystem() {
+function renderSchedule() {
+
+    scheduleList.innerHTML = "";
+
+    examSchedule.forEach((exam, index) => {
+
+        const item = document.createElement("div");
+
+        item.className = "schedule-item";
+
+        item.innerHTML = `
+            <strong>${exam.grade} — ${exam.subject}</strong>
+            <span>${exam.start} - ${exam.end}</span>
+        `;
+
+        scheduleList.appendChild(item);
+
+    });
+
+}
+
+function updateExams() {
+
+    activeContainer.innerHTML = "";
 
     const now = new Date();
 
-    scheduleContainer.innerHTML = "";
-
-    activeExamsContainer.innerHTML = "";
-    upcomingExamsContainer.innerHTML = "";
-
-    let activeExam = null;
+    let firstActive = null;
 
     examSchedule.forEach(exam => {
 
-        const start = convertToDate(exam.start);
-        const end = convertToDate(exam.end);
-
-        let state = "upcoming";
+        const start = convertTime(exam.start);
+        const end = convertTime(exam.end);
 
         if (now >= start && now <= end) {
-            state = "active";
-        }
 
-        else if (now > end) {
-            state = "finished";
-        }
+            if (!firstActive) {
+                firstActive = exam;
+            }
 
-        const card = document.createElement("div");
+            const item = document.createElement("div");
 
-        card.className = `schedule-card ${state}`;
+            item.className = "active-item";
 
-        card.innerHTML = `
-            <div class="schedule-grade">${exam.grade}</div>
-            <div class="schedule-subject">${exam.subject}</div>
-            <div class="schedule-time">${exam.start} - ${exam.end}</div>
-        `;
-
-        scheduleContainer.appendChild(card);
-
-        if (state === "active") {
-
-            activeExam = exam;
-
-            const activeItem = document.createElement("div");
-
-            activeItem.className = "exam-list-item";
-
-            activeItem.innerHTML = `
+            item.innerHTML = `
                 <strong>${exam.grade}</strong>
                 <span>${exam.subject}</span>
             `;
 
-            activeExamsContainer.appendChild(activeItem);
-
-        }
-
-        if (state === "upcoming") {
-
-            const upcomingItem = document.createElement("div");
-
-            upcomingItem.className = "exam-list-item";
-
-            upcomingItem.innerHTML = `
-                <strong>${exam.grade}</strong>
-                <span>${exam.subject} • ${exam.start}</span>
-            `;
-
-            upcomingExamsContainer.appendChild(upcomingItem);
+            activeContainer.appendChild(item);
 
         }
 
     });
 
-    if (activeExam) {
+    if (firstActive) {
 
-        const end = convertToDate(activeExam.end);
+        const end = convertTime(firstActive.end);
 
         const diff = end - now;
 
-        countdown.textContent = formatTime(diff);
+        heroGrade.textContent = firstActive.grade;
+        heroSubject.textContent = `${firstActive.subject} Examination`;
 
-        currentExamTitle.textContent =
-            `${activeExam.grade} — ${activeExam.subject}`;
+        heroCountdown.textContent = formatTime(diff);
 
-        startTimeText.textContent = activeExam.start;
-        endTimeText.textContent = activeExam.end;
+        heroStart.textContent = firstActive.start;
+        heroEnd.textContent = firstActive.end;
 
-        remainingText.textContent = formatTime(diff);
+        heroStatus.textContent = "Running";
 
-        statusPill.textContent = "EXAM IN PROGRESS";
+        statusPill.textContent = "LIVE EXAMS";
         statusPill.style.background = "#22c55e";
 
-        if (diff <= 900000 && diff > 300000) {
+        if (diff <= 900000) {
+
             statusPill.textContent = "15 MINUTES REMAINING";
             statusPill.style.background = "#f59e0b";
+
         }
 
         if (diff <= 300000) {
+
             statusPill.textContent = "5 MINUTES REMAINING";
             statusPill.style.background = "#ef4444";
+
         }
 
     }
 
     else {
 
-        countdown.textContent = "00:00:00";
+        heroGrade.textContent = "No Active Grade";
+        heroSubject.textContent = "Waiting For Exams";
 
-        currentExamTitle.textContent = "No Active Exam";
+        heroCountdown.textContent = "00:00:00";
 
-        startTimeText.textContent = "--:--";
-        endTimeText.textContent = "--:--";
+        heroStart.textContent = "--:--";
+        heroEnd.textContent = "--:--";
 
-        remainingText.textContent = "Waiting";
+        heroStatus.textContent = "Waiting";
 
         statusPill.textContent = "WAITING";
-        statusPill.style.background = "#f59e0b";
+        statusPill.style.background = "#2563eb";
 
     }
 
 }
 
-updateSystem();
+renderSchedule();
 
-setInterval(updateSystem, 1000);
+updateExams();
+
+setInterval(updateExams, 1000);
+
